@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FC Liga das Lendas</title>
+<link rel="icon" href="icone.png">
+<link rel="shortcut icon" href="icone.png">
+
+<style>
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-image: url('champions.jpg');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+
+        font-family: Arial, sans-serif;
+
+    }
+
+    .loading-card {
+        width: 92%;
+        max-width: 500px;
+        padding: 40px;
+        text-align: center;
+        border-radius: 16px;
+        background-color: #0b0421cc;
+        box-shadow: 0 10px 30px rgb(0 0 0);
+        color: white;
+
+    }
+
+    .logo {
+
+        max-width: 180px;
+        max-height: 180px;
+        margin-bottom: 10px;
+
+    }
+
+    h2 {
+        margin-top: 0;
+        margin-bottom: 10px;
+        font-weight: bold;
+
+    }
+
+    .subtitle {
+        color: #c6f4ff;
+        margin-bottom: 25px;
+
+    }
+
+    .spinner {
+        margin: 30px auto;
+        width: 70px;
+        height: 70px;
+        border: 6px solid rgba(255,255,255,.2);
+        border-top: 6px solid #31a4b6;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .status {
+        min-height: 40px;
+        font-size: 1rem;
+        color: #c6f4ff;
+        margin-top: 15px;
+    }
+
+    .progress-container {
+        width: 100%;
+        height: 12px;
+        margin-top: 20px;
+        border-radius: 10px;
+        overflow: hidden;
+        background: rgba(255,255,255,.15);
+    }
+
+    .progress-bar {
+        width: 0;
+        height: 100%;
+        border-radius: 10px;
+        background: linear-gradient(
+            90deg,
+            #31a4b6,
+            #5fd4e8
+        );
+        transition: width 1s ease;
+    }
+
+    .small-text {
+        margin-top: 25px;
+        font-size: .85rem;
+        color: #cccccc;
+        line-height: 1.5;
+    }
+
+    .version {
+        margin-top: 25px;
+        font-size: .8rem;
+        opacity: .7;
+    }
+
+</style>
+
+
+</head>
+
+<body>
+
+<div class="loading-card">
+
+
+<img src="icone.png" alt="FC Liga das Lendas" class="logo">
+
+<h2>
+    FC Liga das Lendas
+</h2>
+
+<p class="subtitle">
+    Preparando sua próxima partida...
+</p>
+
+<div class="spinner"></div>
+
+<div id="status" class="status">
+    ⚽ Preparando os gramados...
+</div>
+
+<div class="progress-container">
+    <div id="progressBar" class="progress-bar"></div>
+</div>
+
+<div class="small-text">
+
+    O servidor está iniciando.<br>
+
+    Como utilizamos hospedagem gratuita,
+    isso pode levar alguns segundos.
+
+</div>
+
+<div class="version">
+    Temporada • 2026
+</div>
+
+
+</div>
+
+<script>
+
+    const mensagens = [
+
+        '⚽ Preparando os gramados...',
+        '🏆 Organizando o campeonato...',
+        '📅 Carregando agenda de partidas...',
+        '🥅 Aquecendo os jogadores...',
+        '🥊 Preparando os confrontos...',
+        '🎮 Convocando os jogadores...',
+        '🔥 Carregando estatísticas da temporada...'
+
+    ];
+
+    let indice = 0;
+
+    let progresso = 0;
+
+    const status =
+        document.getElementById('status');
+
+    const progressBar =
+        document.getElementById('progressBar');
+
+    setInterval(() => {
+
+        indice++;
+
+        status.innerText =
+            mensagens[indice % mensagens.length];
+
+    }, 3000);
+
+    setInterval(() => {
+
+        if (progresso < 90) {
+
+            progresso += 5;
+
+            progressBar.style.width =
+                progresso + '%';
+
+        }
+
+    }, 1000);
+
+    async function verificarServidor() {
+
+        try {
+
+            const response =
+                await fetch(
+                    'https://ligadaslendas.onrender.com/public/status',
+                    {
+                        cache: 'no-store'
+                    }
+                );
+
+            if (response.ok) {
+
+                progressBar.style.width = '100%';
+
+                status.innerText =
+                    '✅ Sistema iniciado!';
+
+                setTimeout(() => {
+
+                    window.location.href =
+                        'https://ligadaslendas.onrender.com/login';
+
+                }, 1000);
+
+                return;
+
+            }
+
+        } catch (e) {
+        }
+
+        setTimeout(
+            verificarServidor,
+            5000
+        );
+
+    }
+
+    verificarServidor();
+
+</script>
+
+</body>
+</html>
